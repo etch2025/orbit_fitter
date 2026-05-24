@@ -1,4 +1,4 @@
-Orbit Fitter for binary stars.
+Orbit Fitter for binary stars (WIP).
 
 General Notes:
 - Primary star is located at origin
@@ -9,6 +9,8 @@ General Notes:
     - Kruger 60 (DO Cephei)
     - Sirius
     - Porrima (Gamma Virginis)
+
+<img width="3803" height="4404" alt="image" src="https://github.com/user-attachments/assets/96dce4df-ba53-4302-9ec0-2807d5d1f8ce" />
 
 Planned Features
 - Predicted Position
