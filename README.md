@@ -2,7 +2,8 @@ Orbit Fitter for binary stars (WIP).
 
 General Notes:
 - Primary star is located at origin
-- Uses NumPy, Matplotlib, and SciPy libraries to generate an elliptical orbit
+- Non-linear least squares method using SciPy
+- Plotting and analysis done through Matplotlib and NumPy
 - Plots obervation data, fitted orbit, and apoapsis and periapsis location
 - Example binary star data from [Stellie Doppie](https://www.stelledoppie.it/) included
     - 61 Cygni AB
