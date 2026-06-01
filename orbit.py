@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, fsolve
 
-target = "Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
+target = "61 Cygni AB (STF 2758) | Arc: 2000-2026"#"Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
 unit = 'arcsec'
-data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
+data = np.genfromtxt('61cyg.csv', delimiter=',', skip_header=1)
 
 theta = np.deg2rad(data[:, 0])
 r = data[:, 1]
@@ -86,7 +86,8 @@ t_i = 0 # time of first observation (arbitrary)
 
 
 E_i = 2 * np.arctan(np.sqrt((1-e_fit)/(1+e_fit)) * np.tan(np.radians(last_theta)/2))
-t0 = t_i - (E_i - e_fit * np.sin(E_i)) * (P * 365.25 * 24 * 60**2) / (2 * np.pi)
+t0 = abs(t_i - (E_i - e_fit * np.sin(E_i)) * (P * 365.25 * 24 * 60**2) / (2 * np.pi))
+
 
 if rho_last - rho_first >= 0:
     t_yrnextperiapsis = t_last-t0/(365.25 * 24 * 60**2) + P
