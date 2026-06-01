@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, fsolve
 
 target = "Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
-unit = "arcsec"
+unit = 'arcsec'
 data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
 
 theta = np.deg2rad(data[:, 0])
