@@ -1,16 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
+from scipy.optimize import curve_fit, fsolve
 
-target = "61 Cygni AB (STF 2758)"
+target = "Binary Star Orbit Fit"
 unit = "arcsec"
-data = np.genfromtxt('61cyg.csv', delimiter=',', skip_header=1)
+data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
 
 theta = np.deg2rad(data[:, 0])
 r = data[:, 1]
 x = r * np.cos(theta)
 y = r * np.sin(theta)
 
+dates = data[:, 2]
 
 
 """# Get x and y columns
@@ -55,6 +56,51 @@ ss_res = calc_residuals()
 ss_tot = np.sum((r - np.mean(r))**2)
 r_squared = 1 - (ss_res / ss_tot)
 
+# -------------------------------------
+# estimate orbital period based on observational data
+
+t_first = data[0][2] # year of first observation
+t_last = data[-1][2] # year of last observation
+
+rho_first = data[0][1] 
+rho_last = data[-1][1] 
+
+first_theta = data[0][0] - np.degrees(omega_fit) # degrees
+last_theta = data[-1][0] - np.degrees(omega_fit) # degrees
+
+
+E_first = 2 * np.arctan(np.sqrt((1-e_fit)/(1+e_fit)) * np.tan(np.deg2rad(first_theta)/2))
+E_last = 2 * np.arctan(np.sqrt((1-e_fit)/(1+e_fit)) * np.tan(np.deg2rad(last_theta)/2))
+
+
+def kepler_eq(E, e):
+    return E - e * np.sin(np.deg2rad(E))
+
+M_first = kepler_eq(E_first, e_fit)
+M_last = kepler_eq(E_last, e_fit)
+
+P = abs((2 * np.pi) * (t_last - t_first) / (M_last - M_first))
+
+# print(f"Estimated orbital period: {P:.3f} years")
+t_i = 0 # time of first observation (arbitrary)
+
+
+E_i = 2 * np.arctan(np.sqrt((1-e_fit)/(1+e_fit)) * np.tan(np.radians(last_theta)/2))
+t0 = t_i - (E_i - e_fit * np.sin(E_i)) * (P * 365.25 * 24 * 60**2) / (2 * np.pi)
+
+if rho_last - rho_first >= 0:
+    t_yrnextperiapsis = t_last-t0/(365.25 * 24 * 60**2) + P
+    t_yrnextapoapsis = t_last-t0/(365.25 * 24 * 60**2) + P/2
+    t_yrlastperiapsis = t_last-t0/(365.25 * 24 * 60**2)
+    t_yrlastapoapsis = t_last-t0/(365.25 * 24 * 60**2) - P/2
+
+else:
+    t_yrnextperiapsis = t_last+t0/(365.25 * 24 * 60**2)
+    t_yrnextapoapsis = t_last+t0/(365.25 * 24 * 60**2) + P/2
+    t_yrlastperiapsis = t_last+t0/(365.25 * 24 * 60**2) - P
+    t_yrlastapoapsis = t_last+t0/(365.25 * 24 * 60**2) - P/2
+
+# -------------------------------------
 
 
 # --- Plot ---
@@ -89,12 +135,11 @@ ax.set_ylabel(f'→ E ({unit})')
 # ax.set_xlim(-1.5*a_fit, 1.5*a_fit)
 # ax.set_ylim(-1.5*a_fit, 1.5*a_fit)
 
-ax.set_title(f'{target}\nn = {len(x)}, R² = {r_squared:.4f}\na = {a_fit:.3f} {unit}, e = {e_fit:.3f}, ω = {np.degrees(omega_fit):.3f} deg\nPeriapsis = {a_fit*(1-e_fit):.3f} {unit}, Apoapsis = {a_fit*(1+e_fit):.3f} {unit}')
+ax.set_title(f'{target}\nn = {len(x)}, R² = {r_squared:.6f}\na = {a_fit:.3f} {unit}, e = {e_fit:.3f}, ω = {np.degrees(omega_fit):.3f} deg, Period = {P:.3f} yrs,\nLast Periapsis Yr: {t_yrlastperiapsis:.3f}, Last Apoapsis Yr: {t_yrlastapoapsis:.3f}\nNext Periapsis Yr: {t_yrnextperiapsis:.3f}, Next Apoapsis Yr: {t_yrnextapoapsis:.3f}\nPeriapsis = {a_fit*(1-e_fit):.3f} {unit}, Apoapsis = {a_fit*(1+e_fit):.3f} {unit}')
 ax.set_aspect('equal')
 ax.grid(True, alpha=0.3)
-ax.legend(markerscale = 1, loc='upper right', fontsize='small')
-
-plt.tight_layout()
+ax.legend(bbox_to_anchor=(-0.1, -0.1), loc='upper left', fontsize='small', markerscale = 1, ncols = 4)
+#plt.tight_layout()
 plt.savefig('orbit_fit.png', dpi=750, bbox_inches='tight')
 
 # print(f"Fitted orbital parameters:")
@@ -106,5 +151,3 @@ plt.savefig('orbit_fit.png', dpi=750, bbox_inches='tight')
 
 print("Plot saved to orbit_fit.png")
 
-# Predict position at future time
-# print(orbit_model(np.deg2rad(10), a_fit, e_fit, omega_fit))
