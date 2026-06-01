@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, fsolve
 
-target = "Binary Star Orbit Fit"
+target = "Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
 unit = "arcsec"
 data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
 
