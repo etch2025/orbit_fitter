@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, fsolve
 
-target = "61 Cygni AB (STF 2758) | Arc: 2000-2026"#"Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
+target = "Kruger 60 AB (DO Cephei) | Arc: 2020-2026"
 unit = 'arcsec'
-data = np.genfromtxt('61cyg.csv', delimiter=',', skip_header=1)
+data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
 
 theta = np.deg2rad(data[:, 0])
 r = data[:, 1]
@@ -38,14 +38,15 @@ omega_list = []
 residual_list = []
 
 bounds = ([0, 0, 0], [np.inf, 0.9999, 2*np.pi])
-
+count = 0
 for omega_guess in np.linspace(0, 2*np.pi, 50):
     p0 = [np.mean(r), (r.max()-r.min())/(r.max()+r.min()), omega_guess]
     popt, pcov = curve_fit(orbit_model, theta, r, p0=p0, bounds=bounds)
     a_fit, e_fit, omega_fit = popt
     omega_list.append(omega_fit)
     residual_list.append(calc_residuals())
-
+    count+=1
+    print(f"    {count}/50: Argument of Periapsis Guess: {np.degrees(omega_guess)} deg: Done")
 omega_bestguess = omega_list[residual_list.index(min(residual_list))]
 p0 = [np.mean(r), (r.max()-r.min())/(r.max()+r.min()), omega_bestguess]
 popt, pcov = curve_fit(orbit_model, theta, r, p0=p0, bounds=bounds)
@@ -59,14 +60,16 @@ r_squared = 1 - (ss_res / ss_tot)
 # -------------------------------------
 # estimate orbital period based on observational data
 
+last_index = -1
+
 t_first = data[0][2] # year of first observation
-t_last = data[-1][2] # year of last observation
+t_last = data[last_index][2] # year of second observation
 
 rho_first = data[0][1] 
-rho_last = data[-1][1] 
+rho_last = data[last_index][1] 
 
 first_theta = data[0][0] - np.degrees(omega_fit) # degrees
-last_theta = data[-1][0] - np.degrees(omega_fit) # degrees
+last_theta = data[last_index][0] - np.degrees(omega_fit) # degrees
 
 
 E_first = 2 * np.arctan(np.sqrt((1-e_fit)/(1+e_fit)) * np.tan(np.deg2rad(first_theta)/2))
@@ -121,13 +124,16 @@ peri_y = a_fit * (1 - e_fit) * np.sin(omega_fit)
 apo_x = a_fit * (1 + e_fit) * np.cos(np.pi + omega_fit)
 apo_y = a_fit * (1 + e_fit) * np.sin(np.pi + omega_fit)
 ax.scatter(peri_x, peri_y, color='green', marker='+', s=100, label='Periapsis', zorder=2)
-ax.scatter(apo_x, apo_y, color='orange', marker='+', s=100, label='Apoapsis', zorder=3)
+ax.scatter(apo_x, apo_y, color='purple', marker='+', s=100, label='Apoapsis', zorder=3)
 
 # Plot observations
 ax.scatter(x, y, color='blue', marker = "x",zorder=4, label='Observations', s=20) 
 
 # Plot primary star at origin
 ax.scatter(0, 0, color='red', s=200, marker='o', zorder=5, label='_Hidden Item')
+
+# Plot secondary star at last observed position
+ax.scatter(x[-1], y[-1], color='orange', s=100, marker = 'o', zorder=6, label='_Hidden Item')
 
 
 ax.set_xlabel(f'→ N  ({unit})',)
