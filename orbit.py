@@ -2,8 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, fsolve
 
-target = "Kruger 60 AB (DO Cephei) | Arc: 2020-2026"
+target = "Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
+
+# "Kruger 60 AB (DO Cephei) | Arc: 2020-2026"
 unit = 'arcsec'
+last_index = -1
 data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
 
 theta = np.deg2rad(data[:, 0])
@@ -12,6 +15,7 @@ x = r * np.cos(theta)
 y = r * np.sin(theta)
 
 dates = data[:, 2]
+
 
 
 """# Get x and y columns
@@ -57,10 +61,10 @@ ss_res = calc_residuals()
 ss_tot = np.sum((r - np.mean(r))**2)
 r_squared = 1 - (ss_res / ss_tot)
 
+
+"""
 # -------------------------------------
 # estimate orbital period based on observational data
-
-last_index = -1
 
 t_first = data[0][2] # year of first observation
 t_last = data[last_index][2] # year of second observation
@@ -91,7 +95,6 @@ t_i = 0 # time of first observation (arbitrary)
 E_i = 2 * np.arctan(np.sqrt((1-e_fit)/(1+e_fit)) * np.tan(np.radians(last_theta)/2))
 t0 = abs(t_i - (E_i - e_fit * np.sin(E_i)) * (P * 365.25 * 24 * 60**2) / (2 * np.pi))
 
-
 if rho_last - rho_first >= 0:
     t_yrnextperiapsis = t_last-t0/(365.25 * 24 * 60**2) + P
     t_yrnextapoapsis = t_last-t0/(365.25 * 24 * 60**2) + P/2
@@ -105,6 +108,7 @@ else:
     t_yrlastapoapsis = t_last+t0/(365.25 * 24 * 60**2) - P/2
 
 # -------------------------------------
+"""
 
 
 # --- Plot ---
@@ -116,7 +120,7 @@ y_fit = r_fit * np.sin(theta_dense)
 fig, ax = plt.subplots(figsize=(10, 6))
 
 # Plot fitted orbit
-ax.plot(x_fit, y_fit, color='black', label='Fitted orbit', zorder=1)
+ax.plot(x_fit, y_fit, color='black', label='Sky-Projected Orbit Fit', zorder=1)
 
 # Plot fitted periapsis and apoapsis points
 peri_x = a_fit * (1 - e_fit) * np.cos(omega_fit)
@@ -142,7 +146,13 @@ ax.set_ylabel(f'→ E ({unit})')
 # ax.set_xlim(-1.5*a_fit, 1.5*a_fit)
 # ax.set_ylim(-1.5*a_fit, 1.5*a_fit)
 
-ax.set_title(f'{target}\nn = {len(x)}, R² = {r_squared:.6f}\na = {a_fit:.3f} {unit}, e = {e_fit:.3f}, ω = {np.degrees(omega_fit):.3f} deg, Period = {P:.3f} yrs,\nLast Periapsis Yr: {t_yrlastperiapsis:.3f}, Last Apoapsis Yr: {t_yrlastapoapsis:.3f}\nNext Periapsis Yr: {t_yrnextperiapsis:.3f}, Next Apoapsis Yr: {t_yrnextapoapsis:.3f}\nPeriapsis = {a_fit*(1-e_fit):.3f} {unit}, Apoapsis = {a_fit*(1+e_fit):.3f} {unit}')
+"""
+Removed orbital period data, fix later
+Period = {P:.3f} yrs,\nLast Periapsis Yr: {t_yrlastperiapsis:.3f}, Last Apoapsis Yr: {t_yrlastapoapsis:.3f}\nNext Periapsis Yr: {t_yrnextperiapsis:.3f}, Next Apoapsis Yr: {t_yrnextapoapsis:.3f}
+"""
+
+title = f'{target}\nn = {len(x)}, R² = {r_squared:.6f}\na = {a_fit:.3f} {unit}, e = {e_fit:.3f}, ω = {np.degrees(omega_fit):.3f} deg,\nPeriapsis = {a_fit*(1-e_fit):.3f} {unit}, Apoapsis = {a_fit*(1+e_fit):.3f} {unit}'
+ax.set_title(title, fontsize=8, pad=4)
 ax.set_aspect('equal')
 ax.grid(True, alpha=0.3)
 ax.legend(bbox_to_anchor=(-0.1, -0.1), loc='upper left', fontsize='small', markerscale = 1, ncols = 4)
