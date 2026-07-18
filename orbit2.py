@@ -153,8 +153,8 @@ for k in range(n_starts):
 
 # Plot cost function convergence in log scale
 plt.figure(figsize=(8, 5))
-plt.semilogy(range(1, len(bestcost_list) + 1), bestcost_list, marker="o", markersize=4, color="tab:blue", label = "Best Residuals", zorder = 2)
-plt.semilogy(range(1, len(solcost_list) + 1), solcost_list, "k-", marker="x", markersize=4, label = "All Residuals", zorder = 1)
+plt.semilogy(range(1, len(bestcost_list) + 1), bestcost_list, marker="o", markersize=4, color="tab:blue", label = "Current Fit Residuals", zorder = 2)
+plt.semilogy(range(1, len(solcost_list) + 1), solcost_list, "k-", marker="x", markersize=4, label = "Random Fit Residuals", zorder = 1)
 
 plt.xlabel("Iteration")
 plt.xlim(1, len(bestcost_list))
