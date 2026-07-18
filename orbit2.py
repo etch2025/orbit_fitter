@@ -5,8 +5,6 @@ Fits all seven Campbell elements (P, T, e, a, i, Omega, omega) directly to
 (theta, rho, t) astrometry by modeling the true Keplerian orbit and
 projecting it onto the sky with the Thiele-Innes constants.
 
-Convention: x -> North, y -> East (standard for visual binaries).
-    x = rho * cos(theta),  y = rho * sin(theta)
 """
 
 import numpy as np
@@ -16,12 +14,12 @@ from scipy.optimize import least_squares
 # ----------------------------------------------------------------------
 # Configuration
 # ----------------------------------------------------------------------
-target = "Test System"
+target = "Kruger 60 (DO Cephei)"
 unit = "arcsec" 
 csv_file = "test.csv"
 
-n_starts = 200
-guess_fractional_range = 0.1
+n_starts = 100
+guess_fractional_range = 0.3
 
 # For short observation arcs (<~30% of the period), P is unconstrained by
 # the data and must be fixed from an external source (literature orbit,
@@ -166,8 +164,8 @@ plt.ylabel("Residuals")
 
 plt.title("Cost Function Convergence")
 plt.legend()
-plt.savefig("cost_function_convergence.png", dpi=200, bbox_inches="tight")
-print("Cost function convergence plot saved to cost_function_convergence.png")
+plt.savefig("residuals_convergence.png", dpi=200, bbox_inches="tight")
+print("Cost function convergence plot saved to residuals_convergence.png")
 
 P, T, e, a, i, Omega, omega = best.x
 
@@ -317,8 +315,8 @@ while T <= t_obs[0] - P:
     T += P
 
 fig.suptitle(
-    f'Test System Orbit Fit | Obs Arc: {t_obs[0]:.0f} - {t_obs[-1]:.0f} |  n = {n_starts}\n'
-    f'Parallax = {parallax_arcsec:.4f}", Distance = {d_pc:.2f} pc, Total Mass = {M_total:.3f} M$_\\odot$\n'
+    f'{target} | Obs Arc: {t_obs[0]:.0f} - {t_obs[-1]:.0f} |  n = {n_starts}\n'
+    f'Parallax = {parallax_arcsec:.4f}", Distance = {d_pc:.2f} pc, $M_{{total}}$ = {M_total:.3f} M$_\\odot$\n'
     f'P = {P:.3f} yr, T = {T:.3f} yr'
     , fontsize=12)
 
@@ -336,5 +334,5 @@ ax2.set_title(
     , fontsize = 11
 )
 
-plt.savefig("orbit_elements_fit.png", dpi=200, bbox_inches="tight")
-print("Plot saved to orbit_elements_fit.png")
+plt.savefig("orbit_fit.png", dpi=200, bbox_inches="tight")
+print("Plot saved to orbit_fit.png")
