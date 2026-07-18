@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, fsolve
 
-target = "Kruger 60 AB (DO Cephei) | Arc: 2022-2026"
+target = "61 Cygni (STF 2758 AB) | Arc: 2000-2026"
 
+# "61 Cygni (STF 2758 AB) | Arc: 2000-2026"
 # "Kruger 60 AB (DO Cephei) | Arc: 2020-2026"
 unit = 'arcsec'
 last_index = -1
-data = np.genfromtxt('test.csv', delimiter=',', skip_header=1)
+data = np.genfromtxt('61cyg.csv', delimiter=',', skip_header=1)
 
 theta = np.deg2rad(data[:, 0])
 r = data[:, 1]
