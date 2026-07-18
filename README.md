@@ -3,6 +3,11 @@ Orbit Fitter for binary stars using the Thiele-Innes Method (7/17/2026)
 General Notes:
 - Non-linear least squares method using SciPy
 - Plotting and analysis done through Matplotlib and NumPy
+- Example binary star data from [Stellie Doppie](https://www.stelledoppie.it/) included
+    - Kruger 60 (DO Cep)
+    - 70 Ophiuchi
+    - 61 Cygni
+    - Sirius (Alp CMa)
 - Assumptions:
     - Both stars are approximately the same distance from Earth
     - Binding energy < 0 (orbit is elliptical)
@@ -30,16 +35,14 @@ General Notes:
     - Observation Points
     - Periastron and Apastron
     - Line of Nodes
-- Future features
-    - Inputting radial velocity and proper motion data to contrain possible orbits
-    - Inputting stellar evolution data to contrain total system mass and possible orbits
-
-- Example binary star data from [Stellie Doppie](https://www.stelledoppie.it/) included
 
 <img width="1300" height="700" alt="image" src="orbit_fit.png" />
 
-Planned Features
-- Predicted Position
-- Parabolic/Hyperbolic orbit fitting
-- Past and predicted time of apoapsis and periapsis
-- Roche Lobe location (for interferometic data)
+- Future features
+    - Inputting radial velocity and proper motion data to contrain possible orbits
+    - Inputting stellar evolution data to contrain total system mass and possible orbits
+    - Position Predictions
+    - Predicted Position
+    - Parabolic/Hyperbolic orbit fitting
+    - Past and predicted time of apoapsis and periapsis
+    - Roche Lobe location (for interferometic data)

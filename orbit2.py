@@ -162,12 +162,18 @@ plt.xlim(1, len(bestcost_list))
 plt.ylabel("Residuals")
 #plt.ylim(0.99 * min(bestcost_list), 1.01 * max(bestcost_list))
 
-plt.title("Cost Function Convergence")
+plt.title("Residual Convergence")
 plt.legend()
 plt.savefig("residuals_convergence.png", dpi=200, bbox_inches="tight")
 print("Cost function convergence plot saved to residuals_convergence.png")
 
 P, T, e, a, i, Omega, omega = best.x
+
+r = residuals(best.x, t_obs, x_obs, y_obs)
+ss_res = np.sum(r**2)                     # = 2 * best.cost
+obs = np.concatenate([x_obs, y_obs])
+ss_tot = np.sum((obs - obs.mean())**2)
+r_squared = 1 - ss_res / ss_tot
 
 
 print(f"Best-fit orbital elements:  P = {P:.3f} yr, T = {T:.3f} yr, e = {e:.3f}, a = {a:.3f}\", ")
@@ -315,7 +321,7 @@ while T <= t_obs[0] - P:
     T += P
 
 fig.suptitle(
-    f'{target} | Obs Arc: {t_obs[0]:.0f} - {t_obs[-1]:.0f} |  n = {n_starts}\n'
+    f'{target} | Obs Arc: {t_obs[0]:.0f} - {t_obs[-1]:.0f} |  n = {n_starts}, R² = {r_squared}\n'
     f'Parallax = {parallax_arcsec:.4f}", Distance = {d_pc:.2f} pc, $M_{{total}}$ = {M_total:.3f} M$_\\odot$\n'
     f'P = {P:.3f} yr, T = {T:.3f} yr'
     , fontsize=12)
