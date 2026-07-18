@@ -36,7 +36,9 @@ General Notes:
     - Periastron and Apastron
     - Line of Nodes
 
-<img width="1300" height="700" alt="image" src="orbit_fit.png" />
+<img width="1300" height="700" alt="image" src="orbit_fit.png"/>
+
+<img width="800" height="500" alt="image" src="residuals_convergence.png" />
 
 - Future features
     - Inputting radial velocity and proper motion data to contrain possible orbits
