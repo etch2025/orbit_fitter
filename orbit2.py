@@ -14,9 +14,9 @@ from scipy.optimize import least_squares
 # ----------------------------------------------------------------------
 # Configuration
 # ----------------------------------------------------------------------
-target = "Kruger 60 (DO Cephei)"
+target = "Test System"
 unit = "arcsec" 
-csv_file = "test.csv"
+csv_file = "61cyg.csv"
 
 n_starts = 100
 guess_fractional_range = 0.3

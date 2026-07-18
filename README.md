@@ -16,7 +16,7 @@ General Notes:
         - Position angle (Theta): Degrees 
         - Angular Distance (RHO): Arcseconds (")
         - Decimal Observation Year
-        - Parallax Angle (first data row only): Arcseconds (")
+        - Parallax Angle (first data row only): Milliarcseconds (mas)
 - Calculates
     - Total System Mass
     - Last Periastron Passage Year
@@ -36,11 +36,12 @@ General Notes:
     - Periastron and Apastron
     - Line of Nodes
 
-<img width="1300" height="700" alt="image" src="orbit_fit.png"/>
+<img width="1300" height="700" alt="image" src="Example Images/orbit_fit.png"/>
 
-<img width="800" height="500" alt="image" src="residuals_convergence.png" />
+<img width="800" height="500" alt="image" src="Example Images/residuals_convergence.png" />
 
 - Future features
+    - Mass determination of individual components
     - Inputting radial velocity and proper motion data to contrain possible orbits
     - Inputting stellar evolution data to contrain total system mass and possible orbits
     - Position Predictions
