@@ -153,8 +153,8 @@ for k in range(n_starts):
 
 # Plot cost function convergence in log scale
 plt.figure(figsize=(8, 5))
-plt.semilogy(range(1, len(bestcost_list) + 1), bestcost_list, marker="o", markersize=4, color="tab:blue", label = "Best Residuals")
-plt.semilogy(range(1, len(solcost_list) + 1), solcost_list, "k-", marker="x", markersize=4, label = "All Residuals")
+plt.semilogy(range(1, len(bestcost_list) + 1), bestcost_list, marker="o", markersize=4, color="tab:blue", label = "Best Residuals", zorder = 2)
+plt.semilogy(range(1, len(solcost_list) + 1), solcost_list, "k-", marker="x", markersize=4, label = "All Residuals", zorder = 1)
 
 plt.xlabel("Iteration")
 plt.xlim(1, len(bestcost_list))
@@ -176,7 +176,6 @@ ss_tot = np.sum((obs - obs.mean())**2)
 r_squared = 1 - ss_res / ss_tot
 
 
-print(f"Best-fit orbital elements:  P = {P:.3f} yr, T = {T:.3f} yr, e = {e:.3f}, a = {a:.3f}\", ")
 # ----------------------------------------------------------------------
 # Physical quantities: distance scaling + Kepler's third law
 # ----------------------------------------------------------------------
@@ -322,7 +321,7 @@ while T <= t_obs[0] - P:
 
 fig.suptitle(
     f'{target} | Obs Arc: {t_obs[0]:.0f} - {t_obs[-1]:.0f} |  n = {n_starts}, R² = {r_squared}\n'
-    f'Parallax = {parallax_arcsec:.4f}", Distance = {d_pc:.2f} pc, $M_{{total}}$ = {M_total:.3f} M$_\\odot$\n'
+    f'Parallax = {parallax_mas:.4f} mas, Distance = {d_pc:.2f} pc, $M_{{total}}$ = {M_total:.3f} M$_\\odot$\n'
     f'P = {P:.3f} yr, T = {T:.3f} yr'
     , fontsize=12)
 
