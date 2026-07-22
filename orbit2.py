@@ -5,6 +5,9 @@ Fits all seven Campbell elements (P, T, e, a, i, Omega, omega) directly to
 (theta, rho, t) astrometry by modeling the true Keplerian orbit and
 projecting it onto the sky with the Thiele-Innes constants.
 
+Assumptions:
+- Both stars are approximately the same distance from Earth
+- Binding energy < 0 (orbit is elliptical)
 """
 
 import numpy as np
@@ -14,12 +17,34 @@ from scipy.optimize import least_squares
 # ----------------------------------------------------------------------
 # Configuration
 # ----------------------------------------------------------------------
+
+# Target Name
 target = "Test System"
-unit = "arcsec" 
-csv_file = "61cyg.csv"
+unit = '"' # arcsec
+csv_file = "test.csv"
+
 
 n_starts = 100
 guess_fractional_range = 0.3
+
+# Inputs for period/semi-major axis constrainments (optional)
+m1_guess = 1 # Solar masses
+m2_guess = 1 # Solar masses
+
+m1_PM_RA = None # mas/yr
+m1_PM_Dec = None # mas/yr
+m1_PM_RV = None # m/s
+
+m2_PM_RA = None # mas/yr
+m2_PM_Dec = None # mas/yr
+m2_PM_RV = None # m/s
+# ----------------------------------------------------------------------
+
+# Constants (DO NOT CHANGE)
+M_Sun = 1.98847e30  # kg
+AU = 1.495978707e11  # m
+# ----------------------------------------------------------------------
+
 
 # For short observation arcs (<~30% of the period), P is unconstrained by
 # the data and must be fixed from an external source (literature orbit,
@@ -90,7 +115,39 @@ def residuals(params, t, x, y):
     xm, ym = model_xy(params, t)
     return np.concatenate([xm - x, ym - y])
 
+"""
+# Constrain orbital period based on mass guess and last observed separation
+def constrain_period(m1_guess, m2_guess, m1_PM_RA, 
+                     m1_PM_Dec, m1_PM_RV, m2_PM_RA, 
+                     m2_PM_Dec, m2_PM_RV):
+    m_total = (m1_guess + m2_guess) * M_Sun # kg
+    m1 = m1_guess * M_Sun # kg
+    m2 = m2_guess * M_Sun # kg
+    last_sep = rho_obs[-1] 
+    dist_pc = 1.0 / parallax_arcsec
+    dist_AU = (1/parallax_arcsec) * 206265
+    d_AU = (last_sep * dist_AU) / 206265
+    
+    # Convert proper motion from mas/yr to m/s using distance in parsecs
+    if m1_PM_RA is not None and m1_PM_Dec is not None:
+        m1_PM_RA_m_s = (m1_PM_RA/1000) * 4.7406 * dist_pc  # m/s
+        m1_PM_Dec_m_s = (m1_PM_Dec/1000) * 4.7406 * dist_pc  # m/s
 
+    if m2_PM_RA is not None and m2_PM_Dec is not None:
+        m2_PM_RA_m_s = (m2_PM_RA/1000) * 4.7406 * dist_pc  # m/s
+        m2_PM_Dec_m_s = (m2_PM_Dec/1000) * 4.7406 * dist_pc  # m/s
+    
+
+if (m1_guess is not None and m2_guess is not None
+    and m1_PM_RV is not None and m2_PM_RV is not None 
+    and m1_PM_RA is not None and m1_PM_Dec is not None 
+    and m2_PM_RA is not None and m2_PM_Dec is not None 
+    and m1_PM_RV is not None and m2_PM_RV is not None):
+    constrain_period(m1_guess, m2_guess, 
+                     m1_PM_RA, m1_PM_Dec, 
+                     m1_PM_RV, m2_PM_RA, 
+                     m2_PM_Dec, m2_PM_RV)
+"""
 # ----------------------------------------------------------------------
 # Fit: multi-start nonlinear least squares
 # ----------------------------------------------------------------------
@@ -193,7 +250,7 @@ vals = [P, T, e, a, np.degrees(i), np.degrees(Omega), np.degrees(omega)]
 
 
 # ----------------------------------------------------------------------
-# Plot: data, fitted apparent orbit, line of nodes, periastron
+# Plotting: Sky-Projected Orbit Fit and True Orbit Fit
 # ----------------------------------------------------------------------
 E_dense = np.linspace(0, 2 * np.pi, 2000)
 X_d = np.cos(E_dense) - e
@@ -327,9 +384,9 @@ fig.suptitle(
 
 ax1.set_title(
     f'Sky-Projected Orbit Fit\n'
-    f'a = {a:.3f}", e = {e:.3f}, '
+    f'a = {a:.3f}{unit}, e = {e:.3f}, '
     f'i = {np.degrees(i):.3f}$^\\circ$, $\\Omega$ = {np.degrees(Omega):.3f}$^\\circ$, $\\omega$ = {np.degrees(omega):.3f}$^\\circ$'
-    f'\nApastron = {a*(1+e):.3f}", Periastron = {a*(1-e):.3f}"'
+    f'\nApastron = {a*(1+e):.3f}{unit}, Periastron = {a*(1-e):.3f}{unit}'
     , fontsize = 11
 )
 ax2.set_title(
